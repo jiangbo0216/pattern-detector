@@ -7,12 +7,12 @@
  * @param name
  */
 export function detectPatterns(name: string): Set<string> {
-  if (name.endsWith(".bit")) {
+  if (!name.endsWith(".bit")) {
     console.warn("argument should endWith .bit");
     return new Set();
   }
 
-  const patternDetector = new PatternDetector({pos: 0, input: name.slice(0, -3)})
+  const patternDetector = new PatternDetector({pos: 0, input: name.slice(0, -4)})
 
   return patternDetector.parsePatterns()
 }
@@ -49,7 +49,7 @@ export class PatternDetector {
         return new Set(['阿语999'])
       } else if (inputLen === 4) {
         if (this.comsumeN(1, (char: string) => !!char.match(/[٠١٢٣٤٥٦٧٨٩]/)).pass) {
-          return new Set(['阿语10k'])
+          return new Set(['阿语10K'])
         } else {
           return new Set()
         }
@@ -102,9 +102,9 @@ export class PatternDetector {
     const normalPattern = inputLen === 3 
                               ? ['999']
                               : inputLen < 5
-                                ? ['10k']
+                                ? ['10K']
                                 : inputLen < 6 
-                                  ? ['100k']
+                                  ? ['100K']
                                   : []
       patterns.push(new Array(inputLen).fill('A').join(''), ...normalPattern)
   }
@@ -175,7 +175,7 @@ export class PatternDetector {
 
     /*
     p-阿语999
-    p-阿语10k
+    p-阿语10K
     */
     if (input.match(/^[٠١٢٣٤٥٦٧٨٩]/)) {
       return this.parseArab(inputLen)
@@ -203,8 +203,8 @@ export class PatternDetector {
     p-AAAAA
     p-AAAAAA
     p-999
-    p-10k
-    p-100k
+    p-10K
+    p-100K
     */
     let patterns: string[] = []
 
@@ -364,9 +364,9 @@ export class PatternDetector {
 
       // const specialPattern = this.parse4number(numbers)
       // if (specialPattern) {
-      //   patterns.push(...specialPattern, '10k')
+      //   patterns.push(...specialPattern, '10K')
       // } else {
-        patterns.push('10k')
+        patterns.push('10K')
       // }
     }
 
@@ -374,9 +374,9 @@ export class PatternDetector {
  
       // const specialPattern = this.parse5number(numbers)
       // if (specialPattern) {
-      //   patterns.push(...specialPattern, '100k')
+      //   patterns.push(...specialPattern, '100K')
       // } else {
-        patterns.push( '100k')
+        patterns.push( '100K')
       // }
     }
     const allValidPatterns = new Set([
@@ -387,6 +387,7 @@ export class PatternDetector {
       'AAB',
 
       'ABCD', // 这个需要二次确认
+      'ABCC',
       'AAAA',
       'ABBB',
       'AABB',
@@ -482,9 +483,6 @@ export class PatternDetector {
     const len = this.input.length - 2
     if (len < 5) {
       let patterns = []
-      // if (this.comsumeN(len, (char: string) => !!char.match(/\d/)).pass) {
-      //   patterns.push(len < 4 ? `0x${10**len -1}`: `0x10k`)
-      // } 
       const {pass, result: numbers} = this.comsumeN(len, (char: string) => !!char.match(/([0-9]|[a-f])/))
       if (!pass) {
         return new Set()
@@ -497,7 +495,7 @@ export class PatternDetector {
           if (len < 4) {
             patterns.push(`${len}Hex`)
           }
-          patterns.push(len < 4 ? `0x${10**len -1}`: `0x10k`)
+          patterns.push(len < 4 ? `0x${10**len -1}`: `0x10K`)
         }
       }
       return new Set(patterns)

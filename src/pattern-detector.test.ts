@@ -35,10 +35,22 @@ import {
   pattern2Hex,
   pattern3Hex
 } from './fixtures/0x数字'
-import { PatternDetector } from "./pattern-detector";
+import { PatternDetector, detectPatterns } from "./pattern-detector";
 
 it('联合测试', () => {
-
+  expect(detectPatterns("333.bit")).toEqual( new Set(["AAA", "999"]));
+  expect(detectPatterns("2112.bit")).toEqual( new Set([ "10K", "ABBA"]));
+  expect(detectPatterns("45555.bit")).toEqual( new Set(["ABBBB", "100K"]));
+  expect(detectPatterns("888000.bit")).toEqual( new Set(["AAABBB", "XXX000"]));
+  expect(
+    detectPatterns("0098.bit")).toEqual(
+    new Set(["10K", "AABC", "0XXX", "00XX"])
+  );
+  expect(detectPatterns("0x9832.bit")).toEqual( new Set(["0x10K"]));
+  expect(
+    detectPatterns("0311.bit")).toEqual(
+    new Set(["ABCC", "0XXX", "10K", '生日号'])
+  );
 })
 
 describe("0x 数字", () => {
@@ -51,12 +63,12 @@ describe("0x 数字", () => {
     });
   });
 
-  it("0x10k", () => {
+  it("0x10K", () => {
     pattern0x10k.split(" ").forEach((segment) => {
       const patternDetector1 = new PatternDetector({ pos: 0, input: segment });
 
       const pattern = patternDetector1.parsePatterns();
-      expect(pattern).toContain("0x10k");
+      expect(pattern).toContain("0x10K");
     });
   });
   it("pattern3Hex", () => {
@@ -175,9 +187,9 @@ describe("3位数字", () => {
 describe('4位数字', () => {
   [
     ['99乘法表', pattern99乘法表],
-    ['10k', pattern10k],
+    ['10K', pattern10k],
     ['生日号', pattern生日号],
-    ['阿语10k', pattern阿语10k]
+    ['阿语10K', pattern阿语10k]
   ].forEach(([name, pattern]) => {
     it(name, () =>{
       pattern.split(" ").forEach((segment) => {
@@ -208,12 +220,12 @@ describe('4位数字', () => {
 })
 
 describe('5位数字', () => {
-  test("100k", () => {
+  test("100K", () => {
     pattern100k.split(" ").forEach((segment) => {
       const patternDetector1 = new PatternDetector({ pos: 0, input: segment });
 
       const pattern = patternDetector1.parsePatterns();
-      expect(pattern).toContain("100k");
+      expect(pattern).toContain("100K");
     });
   });
   Object.entries(patternX5).forEach(([key, val]) => {
@@ -242,14 +254,7 @@ describe('5位数字', () => {
 })
 
 describe('6位数字', () => {
-  // test("100k", () => {
-  //   pattern100k.split(" ").forEach((segment) => {
-  //     const patternDetector1 = new PatternDetector({ pos: 0, input: segment });
 
-  //     const pattern = patternDetector1.parsePatterns();
-  //     expect(pattern).toContain("100k");
-  //   });
-  // });
 
   Object.entries(patternX6).forEach(([key, val]) => {
     it(key, () => {
@@ -309,7 +314,7 @@ test("生日号", () => {
   const patternDetector1 = new PatternDetector({ pos: 0, input: "0203" });
 
   expect(patternDetector1.parsePatterns()).toEqual(
-    new Set(["生日号", "0X0X", "10k", "0XXX"])
+    new Set(["生日号", "0X0X", "10K", "0XXX"])
   );
 });
 
